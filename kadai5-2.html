@@ -4,18 +4,42 @@
     <title>演習課題5-2：外部APIの呼び出しテスト</title>
 </head>
 <body>
-    <h1 id="msg">何かのAPI</h1>
+    <h1 id="msg">ランダムジョークAPI</h1>
     <form name="apiform"><p>
-        何かのフォーム：<input type="text" name="form_data">
         <button type="button" id="btn1" onclick="some_api(this.form)">実行</button>
     </p></form>
     
     <div id="result"></div>
     <script>
         async function some_api(myForm) {
-            // ここにコードを書く
-            document.getElementById("result").innerHTML += myForm.form_data.value+"<br />";
-            document.apiform.reset();
+            
+            const apiUrl = 'https://official-joke-api.appspot.com/jokes/random';
+
+            try {
+                
+                const response = await fetch(apiUrl);
+                
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                
+                const data = await response.json();
+                
+                
+                const resultDiv = document.getElementById("result");
+                resultDiv.innerHTML += `<p><strong>Setup:</strong> ${data.setup}<br><strong>Punchline:</strong> ${data.punchline}</p>`;
+
+            } catch (error) {
+                
+                const resultDiv = document.getElementById("result");
+                resultDiv.innerHTML += `<p style="color: red;">Error: ${error.message}</p>`;
+                console.error("API呼び出しエラー:", error);
+            }
+            
+            
+            document.apiform.reset(); 
         }
     </script>
 </body>
